@@ -14,6 +14,14 @@ namespace utils {
 		return result;
 	}
 
+	constexpr float square(float x) {
+		return x * x;
+	}
+
+	constexpr float cube(float x) {
+		return x * x * x;
+	}
+
 	constexpr bool isCloseToZero(float x, float tolerance = 0.000001f) {
 		return x < tolerance && x > -tolerance;
 	}

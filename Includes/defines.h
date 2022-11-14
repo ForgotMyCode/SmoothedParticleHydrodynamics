@@ -2,6 +2,8 @@
 
 #define CONSTANT constexpr inline
 
+#define CPPGLOBAL extern
+
 #ifndef NDEBUG
 #define devCheck(QUERY) \
 	if(!(QUERY)) {\

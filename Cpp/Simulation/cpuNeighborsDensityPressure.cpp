@@ -69,8 +69,6 @@ void Simulation::cpuNeighborsDensityPressure(int32 threadId, Particle* particles
 	int32& neighborCount = particle.NumberOfNeighbors;
 	neighborCount = 0;
 
-	int32 particlesTooClose = 0;
-
 	for(auto const [xOff, yOff, zOff] : lookaround) {
 		int32 const xx = cellX + xOff;
 		int32 const yy = cellY + yOff;
@@ -87,30 +85,31 @@ void Simulation::cpuNeighborsDensityPressure(int32 threadId, Particle* particles
 
 			auto const direction = targetParticle->Position - particle.Position;
 
-			float const distanceSquared = glm::dot(direction, direction);
+			float distanceSquared = glm::dot(direction, direction);
 
-			if(distanceSquared <= (config::simulation::physics::smoothingLength * config::simulation::physics::smoothingLength)) {
-				if(utils::isCloseToZero(distanceSquared)) {
-					++particlesTooClose;
-				}
-				else {
-					neighborBuffer[neighborCount].Distance = std::sqrtf(distanceSquared);
-					neighborBuffer[neighborCount].NeighborParticle = targetParticle;
+			if(distanceSquared <= (config::simulation::physics::smoothingLengthSquared) &&
+				targetParticle != &particle
+				) {
+				neighborBuffer[neighborCount].Distance = std::sqrtf(distanceSquared);
+				neighborBuffer[neighborCount].NeighborParticle = targetParticle;
 
-					++neighborCount;
-				}
+				++neighborCount;
 			}
 		}
 	}
 
-	float density = float(particlesTooClose) * config::simulation::physics::smoothingKernelNormalizationDistanceToDensityConstant * utils::powf(
-			utils::powf(config::simulation::physics::smoothingLength, 2), 3);
+	float density = (
+		config::simulation::physics::smoothingKernelNormalizationDistanceToDensityConstant * 
+		config::simulation::physics::particleMass *
+		utils::cube(config::simulation::physics::smoothingLengthSquared)
+		);
 
 	for(int32 i = 0; i < neighborCount; ++i) {
-		density += config::simulation::physics::smoothingKernelNormalizationDistanceToDensityConstant * utils::powf(
-			utils::powf(config::simulation::physics::smoothingLength, 2) - utils::powf(neighborBuffer[i].Distance, 2),
-			3
-		);
+		density += (
+			config::simulation::physics::smoothingKernelNormalizationDistanceToDensityConstant *
+			config::simulation::physics::particleMass *
+			utils::cube(config::simulation::physics::smoothingLengthSquared - utils::square(neighborBuffer[i].Distance)	)
+			);
 	}
 
 	particle.Density = density;

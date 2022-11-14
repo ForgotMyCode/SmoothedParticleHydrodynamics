@@ -85,6 +85,7 @@
   <ItemGroup>
     <ClCompile Include="Cpp\Camera.cpp" />
     <ClCompile Include="Cpp\check.cpp" />
+    <ClCompile Include="Cpp\config.cpp" />
     <ClCompile Include="Cpp\defines.cpp" />
     <ClCompile Include="Cpp\Geometry.cpp" />
     <ClCompile Include="Cpp\Image.cpp" />

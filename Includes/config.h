@@ -32,7 +32,7 @@ namespace config {
 
 			CONSTANT float fovRadians = 0.7853981633974f;
 
-			CONSTANT float movementSpeed = 20.f; // in (opengl units) per second
+			CONSTANT float movementSpeed = 50.f; // in (opengl units) per second
 
 			CONSTANT float mouseSpeed = 0.002f; // scale
 
@@ -64,7 +64,7 @@ namespace config {
 
 	namespace simulation {
 	
-		CONSTANT int32 maxNumberOfParticles = 50;
+		CONSTANT int64 maxNumberOfParticles = 5000;
 
 		CONSTANT float particleSize = 1.f;
 
@@ -72,28 +72,32 @@ namespace config {
 
 		namespace physics {
 
-			CONSTANT float smoothingLength = 5.f;
+			CONSTANT float smoothingLength = 8.f;
 
-			CONSTANT float particleMass = 1.0f;
+			CONSTANT float smoothingLengthSquared = smoothingLength * smoothingLength;
 
-			CONSTANT float gasConstantK = 20.f;
+			CPPGLOBAL float particleMass;
 
-			CONSTANT float restDensity = 1.0f;
+			CPPGLOBAL float gasConstantK;
 
-			CONSTANT float outOfBoundsVelocityScale = -0.9f;
+			CPPGLOBAL float restDensity;
 
-			CONSTANT float gravityForce = -0.1f;
+			CPPGLOBAL float outOfBoundsVelocityScale;
 
-			CONSTANT float dynamicViscosity = 0.5f;
+			CPPGLOBAL float gravityConstant;
+
+			CPPGLOBAL float dynamicViscosity;
+
+			CPPGLOBAL float timeScale;
 
 			inline
 			namespace magicConstants {
 
-				CONSTANT float smoothingKernelNormalizationDistanceToDensityConstant = (315.f * particleMass) / (64.f * std::numbers::pi_v<float> * utils::powf(smoothingLength, 9));
+				CONSTANT float smoothingKernelNormalizationDistanceToDensityConstant = (315.f) / (64.f * std::numbers::pi_v<float> * utils::powf(smoothingLength, 9));
 
-				CONSTANT float smoothingKernelNormalizationPressureToForceConstant = (-45.f * particleMass) / (std::numbers::pi_v<float> * utils::powf(smoothingLength, 6));
+				CONSTANT float smoothingKernelNormalizationPressureToForceConstant = (-45.f) / (std::numbers::pi_v<float> * utils::powf(smoothingLength, 6));
 
-				CONSTANT float smoothingKernelNormalizationViscousForceConstant = (45.f * dynamicViscosity) / (std::numbers::pi_v<float> *utils::powf(smoothingLength, 6));
+				CONSTANT float smoothingKernelNormalizationViscousForceConstant = (45.f) / (std::numbers::pi_v<float> * utils::powf(smoothingLength, 6));
 			
 			}
 
@@ -115,7 +119,7 @@ namespace config {
 
 			CONSTANT float minY = 0.f;
 
-			CONSTANT float maxY = 75.f;
+			CONSTANT float maxY = 50.f;
 
 			CONSTANT float minZ = -20.f;
 

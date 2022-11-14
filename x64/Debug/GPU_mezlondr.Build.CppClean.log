@@ -1,7 +1,10 @@
 d:\projects\gpu_mezlondr\x64\debug\vc143.pdb
 d:\projects\gpu_mezlondr\x64\debug\vc143.idb
 d:\projects\gpu_mezlondr\x64\debug\window.obj
+d:\projects\gpu_mezlondr\x64\debug\utils.obj
 d:\projects\gpu_mezlondr\x64\debug\texture.obj
+d:\projects\gpu_mezlondr\x64\debug\simulation.obj
+d:\projects\gpu_mezlondr\x64\debug\particlesimulatingmesh.obj
 d:\projects\gpu_mezlondr\x64\debug\cpuvelocities.obj
 d:\projects\gpu_mezlondr\x64\debug\cpureallocategrid.obj
 d:\projects\gpu_mezlondr\x64\debug\cpuneighborsdensitypressure.obj
@@ -17,11 +20,12 @@ d:\projects\gpu_mezlondr\x64\debug\geometry.obj
 d:\projects\gpu_mezlondr\x64\debug\defines.obj
 d:\projects\gpu_mezlondr\x64\debug\check.obj
 d:\projects\gpu_mezlondr\x64\debug\camera.obj
+d:\projects\gpu_mezlondr\x64\debug\config.obj
 d:\projects\gpu_mezlondr\x64\debug\glfw3.dll
 d:\projects\gpu_mezlondr\x64\debug\libpng16d.dll
 d:\projects\gpu_mezlondr\x64\debug\zlibd1.dll
-d:\projects\gpu_mezlondr\x64\debug\gpu_mezlondr.ilk
 d:\projects\gpu_mezlondr\x64\debug\gpu_mezlondr.exe
+d:\projects\gpu_mezlondr\x64\debug\gpu_mezlondr.ilk
 d:\projects\gpu_mezlondr\x64\debug\gpu_mezlondr.pdb
 d:\projects\gpu_mezlondr\x64\debug\gpu_mezlondr.tlog\cl.command.1.tlog
 d:\projects\gpu_mezlondr\x64\debug\gpu_mezlondr.tlog\cl.read.1.tlog

@@ -46,6 +46,8 @@ public:
 
 	void PassUniformInt(int32 uniformHandle, int32 integer);
 
+	void PassUniformFloat(int32 uniformHandle, float floatingPoint);
+
 private:
 	uint32 Handle{};
 };

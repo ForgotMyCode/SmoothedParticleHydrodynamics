@@ -9,37 +9,28 @@ void Simulation::cpuVelocities(int32 threadId, Particle* particles, int32 nParti
 
 	// time step
 
+	check(particle.Density > 0.f);
+
 	particle.Velocity += utils::isCloseToZero(particle.Density) ? glm::vec3(0.f) : (particle.Force * deltaTimeSec / particle.Density);
 
 	particle.Position += deltaTimeSec * particle.Velocity;
 
 	// bounding box check
+	bool isOut = false;
 
-	bool const isOut = (
-		particle.Position.x <= config::simulation::boundingBox::minX ||
-		particle.Position.y <= config::simulation::boundingBox::minY ||
-		particle.Position.z <= config::simulation::boundingBox::minZ ||
-		particle.Position.x >= config::simulation::boundingBox::maxX ||
-		particle.Position.y >= config::simulation::boundingBox::maxY ||
-		particle.Position.z >= config::simulation::boundingBox::maxZ
-		);
+	for(int dim = 0; dim < 3; ++dim) {
+		if(particle.Position[dim] < config::simulation::boundingBox::mins[dim] || particle.Position[dim] > config::simulation::boundingBox::maxs[dim]) {
+			isOut = true;
 
-	particle.Position = glm::clamp(particle.Position,
-		config::simulation::boundingBox::mins,
-		config::simulation::boundingBox::maxs
-		);
+			particle.Velocity[dim] *= -1.f;
+			particle.Velocity *= config::simulation::physics::outOfBoundsVelocityScale;
+		}
+	}
 
 	if(isOut) {
-		particle.Velocity *= config::simulation::physics::outOfBoundsVelocityScale;
-
-		// send the particle little bit towards the center
-
-		
-		glm::vec3 center = (config::simulation::boundingBox::maxs + config::simulation::boundingBox::mins) / 2.f;
-
-		glm::vec3 directionToCenter = glm::normalize(center - particle.Position);
-
-		particle.Velocity += directionToCenter * 0.1f;
-		
+		particle.Position = glm::clamp(particle.Position,
+			config::simulation::boundingBox::mins,
+			config::simulation::boundingBox::maxs
+		);
 	}
 }

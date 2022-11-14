@@ -34,7 +34,14 @@ void ParticleSimulatingMesh::Render() {
 		this->ShaderPtr->PassUniformMatrix4f(this->ProjectionHandle, window->GetCachedProjectionMatrix());
 		PARANOID_CHECK();
 
+		const int32 densityHandle = this->ShaderPtr->GetUniformHandle("density");
+
 		auto modelMatrix = this->GetCachedModelMatrix();
+
+		const int32 gridXhandle = this->ShaderPtr->GetUniformHandle("gridX");
+		const int32 gridYhandle = this->ShaderPtr->GetUniformHandle("gridY");
+		const int32 gridZhandle = this->ShaderPtr->GetUniformHandle("gridZ");
+
 
 		for(int32 i = 0; i < this->ParticleSimulation.GetNumberOfParticles(); ++i) {
 			Simulation::Particle& particle = ParticleSimulation.GetParticles()[i];
@@ -43,6 +50,13 @@ void ParticleSimulatingMesh::Render() {
 
 			this->ShaderPtr->PassUniformMatrix4f(this->ModelHandle, particleModel);
 			PARANOID_CHECK();
+
+			this->ShaderPtr->PassUniformFloat(densityHandle, particle.Density);
+			PARANOID_CHECK();
+
+			this->ShaderPtr->PassUniformInt(gridXhandle, particle.CellIdx[0] % 2);
+			this->ShaderPtr->PassUniformInt(gridYhandle, particle.CellIdx[1] % 2);
+			this->ShaderPtr->PassUniformInt(gridZhandle, particle.CellIdx[2] % 2);
 
 			this->GeometryPtr->Render();
 			PARANOID_CHECK();

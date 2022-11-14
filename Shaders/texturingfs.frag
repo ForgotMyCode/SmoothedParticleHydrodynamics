@@ -6,13 +6,16 @@ out vec4 FragColor;
 
 uniform sampler2D sprite;
 
-void main() {
-	vec4 color = texture(sprite, TexCoords);
+uniform float density;
 
-	if(color.w > 0) {
-		FragColor = vec4(color.xyz, 1.0);
-	}
-	else {
-		FragColor = vec4(0.0);
-	}
+uniform int gridX;
+uniform int gridY;
+uniform int gridZ;
+
+void main() {
+	float d = clamp(density, 0.0, 1.0);
+	float b = clamp(d, 0.0, 0.1);
+
+	FragColor = vec4(gridX, gridY, gridZ, 1.0);
+	//FragColor = vec4(d, 1.0 - d, (0.1 - b) * 10.0, 1.0);
 }

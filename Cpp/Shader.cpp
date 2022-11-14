@@ -70,6 +70,11 @@ void Shader::PassUniformInt(int32 uniformHandle, int32 integer) {
 	PARANOID_CHECK();
 }
 
+void Shader::PassUniformFloat(int32 uniformHandle, float floatingPoint) {
+	glUniform1f(uniformHandle, floatingPoint);
+	PARANOID_CHECK();
+}
+
 namespace shaderCompiler {
 
 	CompiledShaderUnit compileShaderFromSource(std::string const& source, ShaderType shaderType) {

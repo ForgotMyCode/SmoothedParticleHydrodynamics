@@ -7,15 +7,15 @@ void Simulation::Initialize() {
 		Particle& particle = Particles[i];
 
 		particle.Position = glm::vec3(
-			utils::random(config::simulation::boundingBox::minX, config::simulation::boundingBox::maxX),
-			utils::random(config::simulation::boundingBox::minY, config::simulation::boundingBox::maxY),
-			utils::random(config::simulation::boundingBox::minZ, config::simulation::boundingBox::maxZ)
+			utils::random(config::simulation::boundingBox::minX / 3.f, config::simulation::boundingBox::maxX / 3.f),
+			utils::random(config::simulation::boundingBox::minY / 3.f, config::simulation::boundingBox::maxY / 3.f),
+			utils::random(config::simulation::boundingBox::minZ / 3.f, config::simulation::boundingBox::maxZ / 3.f)
 		);
 
 		particle.Velocity = glm::vec3(
-			utils::random(-0.1, 0.1),
-			utils::random(-0.1, 0.1),
-			utils::random(-0.1, 0.1)
+			utils::random(-0.1f, 0.1f),
+			utils::random(-0.1f, 0.1f),
+			utils::random(-0.1f, 0.1f)
 		);
 
 		//particle.Position = glm::vec3(10.f + float(i), 10.f, 0.f);
@@ -25,7 +25,7 @@ void Simulation::Initialize() {
 
 void Simulation::cpuStepSerial(float deltaTimeSec) {
 	//deltaTimeSec = 0.01f;
-	glm::clamp(deltaTimeSec, 0.001f, 0.1f);
+	deltaTimeSec = glm::clamp(deltaTimeSec, 0.001f, 0.1f);
 
 	ReallocateGridPointer = 0;
 	NeighborsDensityPressurePointer = 0;
@@ -35,7 +35,7 @@ void Simulation::cpuStepSerial(float deltaTimeSec) {
 	}
 
 	static constexpr int32 minThreads = std::max(
-		config::simulation::maxNumberOfParticles,
+		int32(config::simulation::maxNumberOfParticles),
 		config::simulation::boundingBox::nCells
 	);
 
@@ -64,25 +64,25 @@ void Simulation::cpuStepSerial(float deltaTimeSec) {
 	}
 }
 
-void Simulation::cpuStepParallel(float deltaTimeSec) {
-	//deltaTimeSec = 0.01f;
-	glm::clamp(deltaTimeSec, 0.001f, 0.1f);
-
+void Simulation::cpuStepParallel(float deltaTimeSec) {	
 	ReallocateGridPointer = 0;
 	NeighborsDensityPressurePointer = 0;
-
-	FOR_EACH_CELL_ZYX(z, y, x) {
-		CellCounts[z][y][x] = 0;
-	}
+	
 
 	static constexpr int32 minThreads = std::max(
-		config::simulation::maxNumberOfParticles,
+		int32(config::simulation::maxNumberOfParticles),
 		config::simulation::boundingBox::nCells
 	);
 
 #pragma omp parallel
 	{
 
+#pragma omp for
+		FOR_EACH_CELL_ZYX(z, y, x) {
+			CellCounts[z][y][x] = 0;
+		}
+
+#pragma omp barrier
 #pragma omp for
 		for(int32 threadId = 0; threadId < minThreads; ++threadId) {
 			cpuCellCounts(threadId, Particles.get(), CellCounts, NumberOfParticles, 1);
@@ -115,7 +115,7 @@ void Simulation::cpuStepParallel(float deltaTimeSec) {
 #pragma omp barrier
 #pragma omp for
 		for(int32 threadId = 0; threadId < minThreads; ++threadId) {
-			cpuVelocities(threadId, Particles.get(), NumberOfParticles, deltaTimeSec);
+			cpuVelocities(threadId, Particles.get(), NumberOfParticles, glm::clamp(deltaTimeSec, 0.0001f, 0.1f) * config::simulation::physics::timeScale);
 		}
 	}
 }
