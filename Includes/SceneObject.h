@@ -10,7 +10,7 @@ public:
 
 	virtual void End() {}
 
-	virtual void Step(float deltaSeconds) {}
+	virtual void Step([[maybe_unused]] float deltaSeconds) {}
 
 	virtual void Render() {}
 

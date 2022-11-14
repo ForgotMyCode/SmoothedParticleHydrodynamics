@@ -60,7 +60,7 @@ void Simulation::cpuStepSerial(float deltaTimeSec) {
 	}
 
 	for(int32 threadId = 0; threadId < minThreads; ++threadId) {
-		cpuVelocities(threadId, Particles.get(), NumberOfParticles, deltaTimeSec);
+		cpuVelocities(threadId, Particles.get(), NumberOfParticles, glm::clamp(deltaTimeSec, 0.0001f, 0.1f) * config::simulation::physics::timeScale);
 	}
 }
 

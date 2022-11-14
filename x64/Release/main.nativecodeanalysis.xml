@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DEFECTS>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>D:\projects\GPU_mezlondr\Includes\Simulation\</FILEPATH>
+      <FILENAME>Simulation.h</FILENAME>
+      <LINE>16</LINE>
+      <COLUMN>2</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'Simulation::Particle::Neighbor::Distance' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>Simulation::Particle::Neighbor::{ctor}</FUNCTION>
+    <DECORATED>??0Neighbor@Particle@Simulation@@QEAA@XZ</DECORATED>
+    <FUNCLINE>16</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>Simulation::Particle::Neighbor::Distance</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+</DEFECTS>

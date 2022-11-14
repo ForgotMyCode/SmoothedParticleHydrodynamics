@@ -16,6 +16,6 @@ void main() {
 	float d = clamp(density, 0.0, 1.0);
 	float b = clamp(d, 0.0, 0.1);
 
-	FragColor = vec4(gridX, gridY, gridZ, 1.0);
+	FragColor = vec4(gridX, gridY, gridZ, d);
 	//FragColor = vec4(d, 1.0 - d, (0.1 - b) * 10.0, 1.0);
 }

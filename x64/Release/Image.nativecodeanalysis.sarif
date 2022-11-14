@@ -1,0 +1,113 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "results": [
+        {
+          "ruleId": "C26451",
+          "message": {
+            "text": "Arithmetic overflow: Using operator '*' on a 4 byte value and then casting the result to a 8 byte value. Cast the value to the wider type before calling operator '*' to avoid overflow (io.2)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/projects/GPU_mezlondr/Cpp/Image.cpp"
+                },
+                "region": {
+                  "startLine": 11,
+                  "startColumn": 18,
+                  "endLine": 11,
+                  "endColumn": 26
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "imageUtil::pixelsToNormalFormat",
+                  "decoratedName": "?pixelsToNormalFormat@imageUtil@@YA?AV?$vector@EV?$allocator@E@std@@@std@@AEAU?$CImg@E@cimg_library@@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.34.31933.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///D:/projects/GPU_mezlondr/Cpp/Image.cpp"
+          },
+          "roles": [
+            "analysisTarget",
+            "resultFile"
+          ],
+          "hashes": {
+            "sha-256": "c86dc62ddc7740785bf55e81a4c6e7ecfa3e8714acf20823b87d64c043a5852b"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/projects/gpu_mezlondr/includes/image.h"
+          },
+          "hashes": {
+            "sha-256": "8019539cd62676c41eb2a3531699a5446de3219a3df910a36d5463e7ddf2154f"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/vcpkg/vcpkg/installed/x64-windows/include/libpng16/png.h"
+          },
+          "hashes": {
+            "sha-256": "f8e248049a97831f5e9fb24ec0c7c6b7cacb3b3ba7303300b4f5b2b90bae3c40"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/vcpkg/vcpkg/installed/x64-windows/include/libpng16/pnglibconf.h"
+          },
+          "hashes": {
+            "sha-256": "f6868db3625a3339eea2ca3e1ea40ddc33068bd79527f48810a6d7a2a5d1b4a0"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/vcpkg/vcpkg/installed/x64-windows/include/libpng16/pngconf.h"
+          },
+          "hashes": {
+            "sha-256": "0ba884e89c5bfa8f86ad9286fedc4d26bb6f51f0dba7aaaf67e70baa6fd17a30"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/vcpkg/vcpkg/installed/x64-windows/include/cimg.h"
+          },
+          "hashes": {
+            "sha-256": "bf8574b55d6bfc5a4849e4380d514e8886bd26b2f3af02b9a6e36eeb3295229f"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/vcpkg/vcpkg/installed/x64-windows/include/png.h"
+          },
+          "hashes": {
+            "sha-256": "f8e248049a97831f5e9fb24ec0c7c6b7cacb3b3ba7303300b4f5b2b90bae3c40"
+          }
+        }
+      ]
+    }
+  ]
+}

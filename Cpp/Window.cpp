@@ -73,7 +73,7 @@ void Window::Render() {
 	PARANOID_CHECK();
 }
 
-void Window::SizeCallback(GLFWwindow* windowHandle, int width, int height) {
+void Window::SizeCallback(GLFWwindow*, int width, int height) {
 	PARANOID_CHECK();
 	Window* window = Window::GetActiveWindow();
 
@@ -86,14 +86,14 @@ void Window::SizeCallback(GLFWwindow* windowHandle, int width, int height) {
 	PARANOID_CHECK();
 }
 
-void Window::KeyCallback(GLFWwindow* windowHandle, int key, int scancode, int action, int mods) {
+void Window::KeyCallback(GLFWwindow*, int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mods) {
 	PARANOID_CHECK();
 	Window* window = Window::GetActiveWindow();
 
 	window->GetInputManager().UpdateMapping(KeyType(key), action != GLFW_RELEASE);
 }
 
-void Window::MouseCallback(GLFWwindow* windowHandle, double x, double y) {
+void Window::MouseCallback(GLFWwindow*, double x, double y) {
 	PARANOID_CHECK();
 
 	Window* window = Window::GetActiveWindow();

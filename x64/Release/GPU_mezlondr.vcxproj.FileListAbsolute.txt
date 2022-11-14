@@ -3,3 +3,5 @@ D:\projects\GPU_mezlondr\x64\Release\GPU_mezlondr.exe
 D:\projects\GPU_mezlondr\x64\Release\glfw3.dll
 D:\projects\GPU_mezlondr\x64\Release\libpng16.dll
 D:\projects\GPU_mezlondr\x64\Release\zlib1.dll
+D:\projects\GPU_mezlondr\x64\Release\GPU_mezlondr.exe.lastcodeanalysissucceeded
+D:\projects\GPU_mezlondr\x64\Release\NativeCodeAnalysis.read.1.tlog

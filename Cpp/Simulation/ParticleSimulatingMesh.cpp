@@ -54,9 +54,12 @@ void ParticleSimulatingMesh::Render() {
 			this->ShaderPtr->PassUniformFloat(densityHandle, particle.Density);
 			PARANOID_CHECK();
 
-			this->ShaderPtr->PassUniformInt(gridXhandle, particle.CellIdx[0] % 2);
-			this->ShaderPtr->PassUniformInt(gridYhandle, particle.CellIdx[1] % 2);
-			this->ShaderPtr->PassUniformInt(gridZhandle, particle.CellIdx[2] % 2);
+			this->ShaderPtr->PassUniformInt(gridXhandle, particle.CellIdx.x % 2);
+			PARANOID_CHECK();
+			this->ShaderPtr->PassUniformInt(gridYhandle, particle.CellIdx.y % 2);
+			PARANOID_CHECK();
+			this->ShaderPtr->PassUniformInt(gridZhandle, particle.CellIdx.z % 2);
+			PARANOID_CHECK();
 
 			this->GeometryPtr->Render();
 			PARANOID_CHECK();

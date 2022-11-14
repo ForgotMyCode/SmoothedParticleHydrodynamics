@@ -28,7 +28,7 @@ Geometry::Geometry(std::initializer_list<int32> attributeSizes, bool isDataStati
 		PARANOID_CHECK();
 
 		for(auto const attributeSize : attributeSizes) {
-			glVertexAttribPointer(idx, attributeSize, GL_FLOAT, GL_FALSE, this->ElementSize * sizeof(float), reinterpret_cast<void*>(offset * sizeof(float)));
+			glVertexAttribPointer(idx, attributeSize, GL_FLOAT, GL_FALSE, GLsizei(this->ElementSize * sizeof(float)), reinterpret_cast<void*>(offset * sizeof(float)));
 			PARANOID_CHECK();
 
 			glEnableVertexAttribArray(idx);
