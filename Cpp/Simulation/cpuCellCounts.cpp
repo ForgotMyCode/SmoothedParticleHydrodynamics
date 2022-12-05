@@ -1,5 +1,7 @@
 #include <Simulation/Simulation.h>
 
+#ifdef DEPRECATED
+
 void Simulation::cpuCellCounts(int32 threadId, Particle* particles, Cells<std::atomic<int32>> cellCounts, int32 nParticles, int32 particlesPerThread) {
 
 	Cells<int32> localCellCounts{};
@@ -26,3 +28,5 @@ void Simulation::cpuCellCounts(int32 threadId, Particle* particles, Cells<std::a
 	}
 
 }
+
+#endif

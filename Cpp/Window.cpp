@@ -3,9 +3,11 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <Simulation/gravityUpdate.h>
 #include <Scene.h>
 
 #include <iostream>
+#include <format>
 
 Window::Window() noexcept {
 	Window::ActiveWindow = this;
@@ -56,6 +58,7 @@ void Window::Step(float deltaSeconds) {
 
 	check(this->ActiveScene);
 
+	updateGravity(deltaSeconds);
 	this->Camera.Update(deltaSeconds);
 	this->ActiveScene->Step(deltaSeconds);
 }
@@ -106,11 +109,30 @@ void Window::MainLoop() {
 
 	float previousFrameTimeSec = 0.f;
 
+	float frames = 0.f;
+	float timeSecs = 0.f;
+
 	while(!glfwWindowShouldClose(this->WindowHandle)) {
-		float const currentFrameTimeSec = float(glfwGetTime());
+		float const currentFrameTimeSec = GetTimeSeconds();
 
 		float const deltaTimeSec = currentFrameTimeSec - previousFrameTimeSec;
 		previousFrameTimeSec = currentFrameTimeSec;
+
+		if(timeSecs >= 1.f) {
+			float const fps = frames / timeSecs;
+			float const tpf = timeSecs / frames;
+			float const cpf = CalculationTimeSecs / frames;
+
+			auto const title = std::format("{:}    || FPS: {:10.2f} | Ms per frame: {:10.2f} || Ms per calculation: {:10.2f} || Gravity direction: {:10.2f}", config::window::defaultTitle, fps, tpf * 1000.f, cpf * 1000.f, config::simulation::gravityDirection);
+			glfwSetWindowTitle(this->WindowHandle, title.c_str());
+
+			frames = 0.f;
+			timeSecs = 0.f;
+			CalculationTimeSecs = 0.f;
+		}
+
+		frames += 1.f;
+		timeSecs += deltaTimeSec;
 
 		PARANOID_CHECK();
 
@@ -140,6 +162,10 @@ void Window::ExitCallback() {
 	PARANOID_CHECK();
 	glfwSetWindowShouldClose(this->WindowHandle, true);
 	PARANOID_CHECK();
+}
+
+float Window::GetTimeSeconds() const {
+	return float(glfwGetTime());
 }
 
 Window* Window::ActiveWindow = nullptr;

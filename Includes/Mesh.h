@@ -51,8 +51,8 @@ public:
 
 	void RecalculateModelMatrix() {
 		glm::mat4 modelMatrix(1.0f);
-		modelMatrix = glm::translate(modelMatrix, this->Location);
 		modelMatrix = glm::scale(modelMatrix, glm::vec3(this->Scale));
+		modelMatrix = glm::translate(modelMatrix, this->Location);
 
 		this->ModelMatrix = modelMatrix;
 	}

@@ -35,7 +35,7 @@ namespace {
 		} };
 }
 
-void Simulation::cpuNeighborsDensityPressure(int32 threadId, Particle* particles, int32 nParticles, Grid grid, Particle::Neighbor* memoryBuffer, std::atomic<int32>& blockPointer) {
+void Simulation::cpuNeighborsDensityPressure(int32 threadId, Particle* particles, int32 nParticles, Grid grid) {
 	if(threadId >= nParticles) {
 		return;
 	}
@@ -48,24 +48,6 @@ void Simulation::cpuNeighborsDensityPressure(int32 threadId, Particle* particles
 	int32 const cellY = cellIdxs.y;
 	int32 const cellZ = cellIdxs.z;
 
-	int32 maxNeighbours = 0;
-
-	for(auto const [xOff, yOff, zOff] : lookaround) {
-		int32 const xx = cellX + xOff;
-		int32 const yy = cellY + yOff;
-		int32 const zz = cellZ + zOff;
-
-		if(xx < 0 || yy < 0 || zz < 0 || xx >= config::simulation::boundingBox::xSamples || yy >= config::simulation::boundingBox::ySamples || zz >= config::simulation::boundingBox::zSamples) {
-			continue;
-		}
-
-		maxNeighbours += grid[zz][yy][xx].Size;
-	}
-
-	int32 const blockStart = blockPointer.fetch_add(maxNeighbours);
-	
-	Particle::Neighbor* neighborBuffer = memoryBuffer + blockStart;
-	particle.Neighbors = neighborBuffer;
 	int32& neighborCount = particle.NumberOfNeighbors;
 	neighborCount = 0;
 
@@ -90,8 +72,8 @@ void Simulation::cpuNeighborsDensityPressure(int32 threadId, Particle* particles
 			if(distanceSquared <= (config::simulation::physics::smoothingLengthSquared) &&
 				targetParticle != &particle
 				) {
-				neighborBuffer[neighborCount].Distance = std::sqrtf(distanceSquared);
-				neighborBuffer[neighborCount].NeighborParticle = targetParticle;
+				particle.Neighbors[neighborCount].Distance = std::sqrtf(distanceSquared);
+				particle.Neighbors[neighborCount].NeighborParticle = targetParticle;
 
 				++neighborCount;
 			}
@@ -108,7 +90,7 @@ void Simulation::cpuNeighborsDensityPressure(int32 threadId, Particle* particles
 		density += (
 			config::simulation::physics::smoothingKernelNormalizationDistanceToDensityConstant *
 			config::simulation::physics::particleMass *
-			utils::cube(config::simulation::physics::smoothingLengthSquared - utils::square(neighborBuffer[i].Distance)	)
+			utils::cube(config::simulation::physics::smoothingLengthSquared - utils::square(particle.Neighbors[i].Distance)	)
 			);
 	}
 

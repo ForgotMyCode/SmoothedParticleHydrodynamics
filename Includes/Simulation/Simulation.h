@@ -41,9 +41,7 @@ struct Simulation {
 	struct Cell {
 		Particle** Particles{};
 
-		int32 Size{};
-
-		std::atomic<int32> FreeIndex{};
+		std::atomic<int32> Size{};
 	};
 
 	template<typename T>
@@ -57,13 +55,9 @@ struct Simulation {
 
 	void cpuStepParallel(float deltaTimeSec);
 
-	void cpuCellCounts(int32 threadId, Particle* particles, Cells<std::atomic<int32>> cellCounts, int32 nParticles, int32 particlesPerThread);
-
-	void cpuReallocateGrid(int32 threadId, Cells<std::atomic<int32>> cellCounts, Grid grid, Particle** memoryBuffer, std::atomic<int32>& blockPointer);
-
 	void cpuFillGridWithParticles(int32 threadId, Particle* particles, int32 nParticles, Grid grid, int32 particlesPerThread);
 
-	void cpuNeighborsDensityPressure(int32 threadId, Particle* particles, int32 nParticles, Grid grid, Particle::Neighbor* memoryBuffer, std::atomic<int32>& blockPointer);
+	void cpuNeighborsDensityPressure(int32 threadId, Particle* particles, int32 nParticles, Grid grid);
 
 	void cpuForces(int32 threadId, Particle* particles, int32 nParticles);
 
@@ -90,21 +84,22 @@ struct Simulation {
 	}
 
 private:
-	// !! must be cleared each step !!
-	std::atomic<int32> ReallocateGridPointer{}, NeighborsDensityPressurePointer{};
-
-	std::unique_ptr<Particle[]> Particles = std::make_unique<Particle[]>(config::simulation::maxNumberOfParticles);
+	std::unique_ptr<Particle[]> Particles;
 
 	// !! must be cleared each step !!
-	Cells<std::atomic<int32>> CellCounts;
-
 	Grid SimulationGrid;
 
-	std::unique_ptr<Particle*[]> GridParticleBuffer = std::make_unique<Particle*[]>(config::simulation::maxNumberOfParticles);
+	std::unique_ptr<Particle*[]> GridParticleBuffer;
 
-	std::unique_ptr<Particle::Neighbor[]> NeighborBuffer = std::make_unique<Particle::Neighbor[]>(config::simulation::maxNumberOfParticles * config::simulation::maxNumberOfParticles);
+	std::unique_ptr<Particle::Neighbor[]> NeighborBuffer;
 
+	Grid* gpuGrid{};
 
+	Particle* gpuParticles{};
+
+	Particle** gpuGridParticleBuffer{};
+
+	Particle::Neighbor* gpuNeighborBuffer{};
 
 	int32 NumberOfParticles = config::simulation::maxNumberOfParticles;
 };

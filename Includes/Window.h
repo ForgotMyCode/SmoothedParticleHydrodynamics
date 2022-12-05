@@ -54,6 +54,12 @@ public:
 		return this->Camera;
 	}
 
+	void AddCalculationTime(float calculationTimeSecs) {
+		this->CalculationTimeSecs += calculationTimeSecs;
+	}
+
+	float GetTimeSeconds() const;
+
 private:
 
 	static void SizeCallback(GLFWwindow* windowHandle, int width, int height);
@@ -63,6 +69,8 @@ private:
 	static void MouseCallback(GLFWwindow* windowHandle, double x, double y);
 
 	void ExitCallback();
+
+	float CalculationTimeSecs{};
 
 	int64 Width = -1, Height = -1;
 	InputManager InputManager{};

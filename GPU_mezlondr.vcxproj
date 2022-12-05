@@ -59,6 +59,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <HeapReserveSize>4000000000</HeapReserveSize>
     </Link>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
@@ -85,6 +86,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <HeapReserveSize>4000000000</HeapReserveSize>
     </Link>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
@@ -107,6 +109,7 @@
     <ClCompile Include="Cpp\Simulation\cpuNeighborsDensityPressure.cpp" />
     <ClCompile Include="Cpp\Simulation\cpuReallocateGrid.cpp" />
     <ClCompile Include="Cpp\Simulation\cpuVelocities.cpp" />
+    <ClCompile Include="Cpp\Simulation\gravityUpdate.cpp" />
     <ClCompile Include="Cpp\Simulation\ParticleSimulatingMesh.cpp" />
     <ClCompile Include="Cpp\Simulation\Simulation.cpp" />
     <ClCompile Include="Cpp\Texture.cpp" />
@@ -118,6 +121,8 @@
     <ClInclude Include="Includes\check.h" />
     <ClInclude Include="Includes\config.h" />
     <ClInclude Include="Includes\core.h" />
+    <ClInclude Include="Includes\cudaargs.h" />
+    <ClInclude Include="Includes\cudaCheck.h" />
     <ClInclude Include="Includes\defines.h" />
     <ClInclude Include="Includes\Geometry.h" />
     <ClInclude Include="Includes\Guard.h" />
@@ -131,6 +136,8 @@
     <ClInclude Include="Includes\SceneObject.h" />
     <ClInclude Include="Includes\Shader.h" />
     <ClInclude Include="Includes\Shapes.h" />
+    <ClInclude Include="Includes\Simulation\gpuSimulation.cuh" />
+    <ClInclude Include="Includes\Simulation\gravityUpdate.h" />
     <ClInclude Include="Includes\Simulation\ParticleSimulatingMesh.h" />
     <ClInclude Include="Includes\Simulation\Simulation.h" />
     <ClInclude Include="Includes\Texture.h" />
@@ -143,7 +150,14 @@
     <None Include="Shaders\simplevs.vert">
       <FileType>Document</FileType>
     </None>
+    <None Include="Shaders\gridvisfs.frag" />
     <None Include="Shaders\texturingfs.frag" />
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="Cpp\Simulation\gpuFillGridWithParticles.cu" />
+    <CudaCompile Include="Cpp\Simulation\gpuForces.cu" />
+    <CudaCompile Include="Cpp\Simulation\gpuNeighborsDensityParticles.cu" />
+    <CudaCompile Include="Cpp\Simulation\gpuVelocities.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

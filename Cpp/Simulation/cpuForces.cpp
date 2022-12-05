@@ -66,8 +66,8 @@ void Simulation::cpuForces(int32 threadId, Particle* particles, int32 nParticles
 	}
 
 	// gravity force
-	force += glm::vec3(0.f, -config::simulation::physics::particleMass * config::simulation::physics::gravityConstant, 0.f);
+	force += config::simulation::physics::particleMass * config::simulation::physics::gravityConstant * glm::vec3(std::sinf(config::simulation::gravityDirection), -std::cosf(config::simulation::gravityDirection), 0.f);
 
-	particle.Force += force;
+	particle.Force = force;
 
 }

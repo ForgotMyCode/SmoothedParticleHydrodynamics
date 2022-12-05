@@ -1,5 +1,7 @@
 #include <Simulation/Simulation.h>
 
+#ifdef DEPRECATED
+
 void Simulation::cpuReallocateGrid(int32 threadId, Cells<std::atomic<int32>> cellCounts, Grid grid, Particle** memoryBuffer, std::atomic<int32>& blockPointer) {
 
 	if(threadId >= config::simulation::boundingBox::nCells) {
@@ -26,3 +28,5 @@ void Simulation::cpuReallocateGrid(int32 threadId, Cells<std::atomic<int32>> cel
 	cell.Particles = memoryBuffer + blockBegin;
 
 }
+
+#endif

@@ -67,7 +67,7 @@ int main() {
 
 	testScene.AddObject(&boxMesh);
 
-	auto image = loader::loadImage("Textures/waterparticle.png");
+	auto image = loader::loadImage("Textures/waterparticle_v3.png");
 
 	Texture texture(image);
 
@@ -77,7 +77,7 @@ int main() {
 
 	auto& particleBuffer = particleGeometry.BeginChangingGeometry();
 
-	auto particleData = shapes::texturedUniquad<-0.5f, 0.5f, -0.5f, 0.5f>();
+	auto particleData = shapes::texturedUniquad<-0.1f, 0.1f, -0.1f, 0.1f>();
 
 	particleBuffer.insert(particleBuffer.end(), particleData.begin(), particleData.end());
 
@@ -92,7 +92,7 @@ int main() {
 
 	texturedParticle.SetLocation(glm::vec3(0.0f, 1.0f, 0.0f));
 
-	testScene.AddObject(&texturedParticle);
+	//testScene.AddObject(&texturedParticle);
 
 	ParticleSimulatingMesh particleMesh(&particleGeometry, &particleShader, &texture);
 

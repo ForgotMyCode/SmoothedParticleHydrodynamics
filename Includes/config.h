@@ -8,6 +8,8 @@
 #include <utils.h>
 
 namespace config {
+
+	CPPGLOBAL bool isGPUsimulation;
 	
 	namespace debug {
 
@@ -21,7 +23,7 @@ namespace config {
 
 		CONSTANT int64 defaultHeight = 720;
 
-		CONSTANT char const* defaultTitle = "TODO";
+		CONSTANT char const* defaultTitle = "mezlondr: Smoothed Particle Hydrodynamics";
 
 		inline
 		namespace camera {
@@ -32,7 +34,7 @@ namespace config {
 
 			CONSTANT float fovRadians = 0.7853981633974f;
 
-			CONSTANT float movementSpeed = 50.f; // in (opengl units) per second
+			CONSTANT float movementSpeed = 20.f; // in (opengl units) per second
 
 			CONSTANT float mouseSpeed = 0.002f; // scale
 
@@ -66,13 +68,18 @@ namespace config {
 	
 		CONSTANT int64 maxNumberOfParticles = 5000;
 
-		CONSTANT float particleSize = 1.f;
+		CPPGLOBAL float particleSize;
 
 		CONSTANT float minUpdateDelaySecs = 0.1f;
 
+		CPPGLOBAL float gravityDirection;
+
+		CPPGLOBAL float gravityDirectionChangePerSecond;
+
 		namespace physics {
 
-			CONSTANT float smoothingLength = 8.f;
+			//CONSTANT float smoothingLength = 8.f;
+			CONSTANT float smoothingLength = 0.15f;
 
 			CONSTANT float smoothingLengthSquared = smoothingLength * smoothingLength;
 
@@ -113,17 +120,21 @@ namespace config {
 
 		namespace boundingBox {
 			
-			CONSTANT float minX = -20.f;
+			//CONSTANT float minX = -20.f;
+			CONSTANT float minX = -2.f;
 
-			CONSTANT float maxX = 20.f;
+			//CONSTANT float maxX = 20.f;
+			CONSTANT float maxX = 2.f;
 
 			CONSTANT float minY = 0.f;
 
-			CONSTANT float maxY = 50.f;
+			CONSTANT float maxY = 4.f;
 
-			CONSTANT float minZ = -20.f;
+			//CONSTANT float minZ = -20.f;
+			CONSTANT float minZ = -2.f;
 
-			CONSTANT float maxZ = 20.f;
+			//CONSTANT float maxZ = 20.f;
+			CONSTANT float maxZ = 2.f;
 
 			CONSTANT float xSize = maxX - minX;
 
