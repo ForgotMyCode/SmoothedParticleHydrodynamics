@@ -6,37 +6,13 @@
 #include <memory>
 
 #include <core.h>
+#include <Simulation/Particle.h>
+
+namespace gpuSimulation {
+	struct GpuCell;
+}
 
 struct Simulation {
-
-	struct Particle {
-		struct Neighbor {
-			Particle* NeighborParticle{};
-			float Distance;
-		};
-
-		// position of the particle
-		glm::vec3 Position{};
-
-		// velocity of the particle
-		glm::vec3 Velocity{};
-
-		// accumulated forces acting upon the particle
-		glm::vec3 Force{};
-
-		// index of cell in the grid this particle belongs to
-		glm::vec<3, int32> CellIdx{};
-
-		// neighbors of this particle
-		Neighbor* Neighbors{};
-
-		// # of neighbors
-		int32 NumberOfNeighbors{};
-
-		float Pressure{};
-
-		float Density{};
-	};
 
 	struct Cell {
 		Particle** Particles{};
@@ -45,7 +21,7 @@ struct Simulation {
 	};
 
 	template<typename T>
-	using Cells = T[config::simulation::boundingBox::zSamples][config::simulation::boundingBox::ySamples][config::simulation::boundingBox::xSamples];
+	using Cells = std::array<std::array<std::array<T, config::simulation::boundingBox::xSamples>, config::simulation::boundingBox::ySamples>, config::simulation::boundingBox::zSamples>;
 	
 	using Grid = Cells<Cell>;
 
@@ -55,9 +31,11 @@ struct Simulation {
 
 	void cpuStepParallel(float deltaTimeSec);
 
-	void cpuFillGridWithParticles(int32 threadId, Particle* particles, int32 nParticles, Grid grid, int32 particlesPerThread);
+	void gpuStepParallel(float deltaTimeSec);
 
-	void cpuNeighborsDensityPressure(int32 threadId, Particle* particles, int32 nParticles, Grid grid);
+	void cpuFillGridWithParticles(int32 threadId, Particle* particles, int32 nParticles, Grid& grid, int32 particlesPerThread);
+
+	void cpuNeighborsDensityPressure(int32 threadId, Particle* particles, int32 nParticles, Grid& grid);
 
 	void cpuForces(int32 threadId, Particle* particles, int32 nParticles);
 
@@ -87,13 +65,16 @@ private:
 	std::unique_ptr<Particle[]> Particles;
 
 	// !! must be cleared each step !!
-	Grid SimulationGrid;
+	std::unique_ptr<Grid> SimulationGrid;
 
 	std::unique_ptr<Particle*[]> GridParticleBuffer;
 
 	std::unique_ptr<Particle::Neighbor[]> NeighborBuffer;
 
-	Grid* gpuGrid{};
+	gpuSimulation::GpuCell* gpuGrid{};
+
+	// Does not fit in constant memory :(
+	gpuSimulation::GpuCell* gpuDefaultGrid{};
 
 	Particle* gpuParticles{};
 

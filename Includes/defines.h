@@ -1,6 +1,6 @@
 #pragma once
 
-#define CONSTANT constexpr inline
+#define CONSTANT constexpr static
 
 #define CPPGLOBAL extern
 
@@ -44,3 +44,11 @@ void checkOpenGLerror(char const* file, int line);
 	for(int32 (ZNAME) = 0; (ZNAME) < config::simulation::boundingBox::zSamples; ++(ZNAME)) \
 			for(int32 (YNAME) = 0; (YNAME) < config::simulation::boundingBox::ySamples; ++(YNAME)) \
 				for(int32 (XNAME) = 0; (XNAME) < config::simulation::boundingBox::xSamples; ++(XNAME))
+
+#define FLATTEN_3D_INDEX(X, Y, Z, MAXX, MAXY) \
+	(((Z) * (MAXX) * (MAXY)) + ((Y) * (MAXX)) + (X))
+
+#define CUBE(X) \
+	((X) * (X) * (X))
+
+#define PI_GPU 3.14159265359f

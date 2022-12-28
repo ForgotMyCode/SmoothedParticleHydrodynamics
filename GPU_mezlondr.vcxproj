@@ -42,9 +42,15 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <VcpkgUseStatic>false</VcpkgUseStatic>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <VcpkgUseStatic>false</VcpkgUseStatic>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;WIN64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.\Includes;%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir)</AdditionalIncludeDirectories>
@@ -67,7 +73,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -117,6 +123,8 @@
     <ClCompile Include="Cpp\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Includes\cudaCompatibleConfig.h" />
+    <ClInclude Include="Includes\Simulation\Particle.h" />
     <ClInclude Include="Includes\Camera.h" />
     <ClInclude Include="Includes\check.h" />
     <ClInclude Include="Includes\config.h" />
@@ -154,9 +162,10 @@
     <None Include="Shaders\texturingfs.frag" />
   </ItemGroup>
   <ItemGroup>
+    <CudaCompile Include="Cpp\gpuCudaInit.cu" />
     <CudaCompile Include="Cpp\Simulation\gpuFillGridWithParticles.cu" />
     <CudaCompile Include="Cpp\Simulation\gpuForces.cu" />
-    <CudaCompile Include="Cpp\Simulation\gpuNeighborsDensityParticles.cu" />
+    <CudaCompile Include="Cpp\Simulation\gpuNeighborsDensityPressure.cu" />
     <CudaCompile Include="Cpp\Simulation\gpuVelocities.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

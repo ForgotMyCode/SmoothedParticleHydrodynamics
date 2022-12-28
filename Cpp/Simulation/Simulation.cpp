@@ -2,14 +2,24 @@
 
 #include <omp.h>
 
+#include <Simulation/gpuSimulation.cuh>
 #include <Window.h>
 
 void Simulation::Initialize() {
-	 Particles = std::make_unique<Particle[]>(config::simulation::maxNumberOfParticles);
+	Particles = std::make_unique<Particle[]>(config::simulation::maxNumberOfParticles);
 
-	GridParticleBuffer = std::make_unique<Particle*[]>(config::simulation::maxNumberOfParticles * config::simulation::boundingBox::nCells);
+	Particle::Neighbor* neighborBuffer{};
 
-	NeighborBuffer = std::make_unique<Particle::Neighbor[]>(config::simulation::maxNumberOfParticles * config::simulation::maxNumberOfParticles);
+	if(config::isGPUsimulation) {
+		gpuSimulation::gpuInitBefore(gpuNeighborBuffer, config::simulation::maxNumberOfParticles);
+
+		neighborBuffer = gpuNeighborBuffer;
+	}
+	else {
+		NeighborBuffer = std::make_unique<Particle::Neighbor[]>(config::simulation::maxNumberOfParticles * config::simulation::maxNumberOfParticles);	
+
+		neighborBuffer = NeighborBuffer.get();
+	}
 
 	for(int32 i = 0; i < NumberOfParticles; ++i) {
 		Particle& particle = Particles[i];
@@ -26,17 +36,26 @@ void Simulation::Initialize() {
 			utils::random(-0.1f, 0.1f)
 		);
 
-		particle.Neighbors = this->NeighborBuffer.get() + (i * config::simulation::maxNumberOfParticles);
+		particle.Neighbors = neighborBuffer + (i * config::simulation::maxNumberOfParticles);
 
 		//particle.Position = glm::vec3(10.f + float(i), 10.f, 0.f);
 		//particle.Velocity = glm::vec3(10.f + float(i), 10.f, 0.f);
 	}
 
-	int64 offset = 0;
+	if(config::isGPUsimulation) {
+		gpuSimulation::gpuInitAfter(Particles.get(), NumberOfParticles, config::simulation::boundingBox::xSamples, config::simulation::boundingBox::ySamples, config::simulation::boundingBox::zSamples, gpuParticles, gpuGrid, gpuGridParticleBuffer, gpuDefaultGrid, config::simulation::maxNumberOfParticles);
+	}
+	else {
+		GridParticleBuffer = std::make_unique<Particle*[]>(config::simulation::maxNumberOfParticles * config::simulation::boundingBox::nCells);
 
-	FOR_EACH_CELL_ZYX(z, y, x) {
-		SimulationGrid[z][y][x].Particles = this->GridParticleBuffer.get() + offset;
-		offset += config::simulation::maxNumberOfParticles;
+		int64 offset = 0;
+
+		SimulationGrid = std::make_unique<Grid>();
+
+		FOR_EACH_CELL_ZYX(z, y, x) {
+			(*SimulationGrid)[z][y][x].Particles = this->GridParticleBuffer.get() + offset;
+			offset += config::simulation::maxNumberOfParticles;
+		}
 	}
 }
 
@@ -48,7 +67,7 @@ void Simulation::cpuStepSerial(float deltaTimeSec) {
 	deltaTimeSec = glm::clamp(deltaTimeSec, 0.001f, 0.1f);
 
 	FOR_EACH_CELL_ZYX(z, y, x) {
-		SimulationGrid[z][y][x].Size = 0;
+		(*SimulationGrid)[z][y][x].Size = 0;
 	}
 
 	static constexpr int32 threadCount = std::max(
@@ -57,11 +76,11 @@ void Simulation::cpuStepSerial(float deltaTimeSec) {
 	);
 
 	for(int32 threadId = 0; threadId < threadCount; ++threadId) {
-		cpuFillGridWithParticles(threadId, Particles.get(), NumberOfParticles, SimulationGrid, 1);
+		cpuFillGridWithParticles(threadId, Particles.get(), NumberOfParticles, *SimulationGrid, 1);
 	}
 
 	for(int32 threadId = 0; threadId < threadCount; ++threadId) {
-		cpuNeighborsDensityPressure(threadId, Particles.get(), NumberOfParticles, SimulationGrid);
+		cpuNeighborsDensityPressure(threadId, Particles.get(), NumberOfParticles, *SimulationGrid);
 	}
 
 	for(int32 threadId = 0; threadId < threadCount; ++threadId) {
@@ -92,19 +111,19 @@ void Simulation::cpuStepParallel(float deltaTimeSec) {
 
 #pragma omp for
 		FOR_EACH_CELL_ZYX(z, y, x) {
-			SimulationGrid[z][y][x].Size = 0;
+			(*SimulationGrid)[z][y][x].Size = 0;
 		}
 		
 #pragma omp barrier
 #pragma omp for
 		for(int32 threadId = 0; threadId < threadCount; ++threadId) {
-			cpuFillGridWithParticles(threadId, Particles.get(), NumberOfParticles, SimulationGrid, 1);
+			cpuFillGridWithParticles(threadId, Particles.get(), NumberOfParticles, *SimulationGrid, 1);
 		}
 		
 #pragma omp barrier
 #pragma omp for
 		for(int32 threadId = 0; threadId < threadCount; ++threadId) {
-			cpuNeighborsDensityPressure(threadId, Particles.get(), NumberOfParticles, SimulationGrid);
+			cpuNeighborsDensityPressure(threadId, Particles.get(), NumberOfParticles, *SimulationGrid);
 		}
 		
 #pragma omp barrier
@@ -125,4 +144,35 @@ void Simulation::cpuStepParallel(float deltaTimeSec) {
 
 	Window::GetActiveWindow()->AddCalculationTime(timeEnd - timeStart);
 
+}
+
+
+void Simulation::gpuStepParallel(float deltaTimeSec) {
+	float const timeStart = Window::GetActiveWindow()->GetTimeSeconds();
+
+	static constexpr int32 threadCount = std::max(
+		int32(config::simulation::maxNumberOfParticles),
+		config::simulation::boundingBox::nCells
+	);
+
+
+	static constexpr int32 blockSize = 256;
+
+	static constexpr int32 gridSize = (threadCount + blockSize - 1) / blockSize;
+
+	gpuSimulation::gpuBeginStep(gpuGrid, gpuDefaultGrid, config::simulation::boundingBox::xSamples, config::simulation::boundingBox::ySamples, config::simulation::boundingBox::zSamples);
+
+	gpuSimulation::callKernel_gpuFillGridWithParticles (gridSize, blockSize, gpuParticles, config::simulation::maxNumberOfParticles, gpuGrid);
+
+	gpuSimulation::callKernel_gpuNeighborsDensityPressure (gridSize, blockSize, gpuParticles, config::simulation::maxNumberOfParticles, gpuGrid, config::simulation::physics::smoothingKernelNormalizationDistanceToDensityConstant, config::simulation::physics::particleMass, config::simulation::physics::gasConstantK, config::simulation::physics::restDensity);
+
+	gpuSimulation::callKernel_gpuForces(gridSize, blockSize, gpuParticles, config::simulation::maxNumberOfParticles, config::simulation::physics::smoothingKernelNormalizationPressureToForceConstant, config::simulation::physics::particleMass, config::simulation::physics::smoothingKernelNormalizationViscousForceConstant, config::simulation::physics::dynamicViscosity, config::simulation::physics::gravityConstant, config::simulation::gravityDirection);
+
+	gpuSimulation::callKernel_gpuVelocities(gridSize, blockSize, gpuParticles, config::simulation::maxNumberOfParticles, deltaTimeSec, config::simulation::physics::outOfBoundsVelocityScale);
+
+	gpuSimulation::gpuFinishStep(Particles.get(), gpuParticles, config::simulation::maxNumberOfParticles);
+
+	float const timeEnd = Window::GetActiveWindow()->GetTimeSeconds();
+
+	Window::GetActiveWindow()->AddCalculationTime(timeEnd - timeStart);
 }

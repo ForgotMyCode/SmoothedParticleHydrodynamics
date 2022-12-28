@@ -35,7 +35,7 @@ namespace {
 		} };
 }
 
-void Simulation::cpuNeighborsDensityPressure(int32 threadId, Particle* particles, int32 nParticles, Grid grid) {
+void Simulation::cpuNeighborsDensityPressure(int32 threadId, Particle* particles, int32 nParticles, Grid& grid) {
 	if(threadId >= nParticles) {
 		return;
 	}

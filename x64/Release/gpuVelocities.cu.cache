@@ -51,5 +51,5 @@ UseHostDefines=true
 UseHostInclude=true
 UseHostLibraryDependencies=
 UseHostLibraryDirectories=
-Warning=W4
-Warning=W4
+Warning=W3
+Warning=W3

@@ -14,7 +14,12 @@ void ParticleSimulatingMesh::Begin() {
 }
 
 void ParticleSimulatingMesh::Step(float deltaSeconds) {
-	this->ParticleSimulation.cpuStepParallel(deltaSeconds);
+	if(config::isGPUsimulation) {
+		this->ParticleSimulation.gpuStepParallel(deltaSeconds);
+	}
+	else {
+		this->ParticleSimulation.cpuStepParallel(deltaSeconds);
+	}
 }
 
 void ParticleSimulatingMesh::Render() {
@@ -48,7 +53,7 @@ void ParticleSimulatingMesh::Render() {
 		auto const rootPosition = this->GetLocation();
 
 		for(int32 i = 0; i < this->ParticleSimulation.GetNumberOfParticles(); ++i) {
-			Simulation::Particle& particle = ParticleSimulation.GetParticles()[i];
+			Particle& particle = ParticleSimulation.GetParticles()[i];
 
 			this->SetLocation(rootPosition + particle.Position);
 

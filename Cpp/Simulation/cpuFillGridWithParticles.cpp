@@ -1,6 +1,6 @@
 #include <Simulation/Simulation.h>
 
-void Simulation::cpuFillGridWithParticles(int32 threadId, Particle* particles, int32 nParticles, Grid grid, int32 particlesPerThread) {
+void Simulation::cpuFillGridWithParticles(int32 threadId, Particle* particles, int32 nParticles, Grid& grid, int32 particlesPerThread) {
 
 	for(int32 particleIdx = threadId * particlesPerThread; particleIdx < std::min(nParticles, threadId * particlesPerThread + particlesPerThread); ++particleIdx) {
 		Particle& particle = particles[threadId];

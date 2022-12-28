@@ -6,6 +6,7 @@
 #include <defines.h>
 #include <niceIntTypes.h>
 #include <utils.h>
+#include <cudaCompatibleConfig.h>
 
 namespace config {
 
@@ -79,7 +80,7 @@ namespace config {
 		namespace physics {
 
 			//CONSTANT float smoothingLength = 8.f;
-			CONSTANT float smoothingLength = 0.15f;
+			//CONSTANT float smoothingLength = 0.15f;
 
 			CONSTANT float smoothingLengthSquared = smoothingLength * smoothingLength;
 
@@ -119,48 +120,48 @@ namespace config {
 		}
 
 		namespace boundingBox {
-			
-			//CONSTANT float minX = -20.f;
-			CONSTANT float minX = -2.f;
+		//	
+		//	//CONSTANT float minX = -20.f;
+		//	CONSTANT float minX = -2.f;
 
-			//CONSTANT float maxX = 20.f;
-			CONSTANT float maxX = 2.f;
+		//	//CONSTANT float maxX = 20.f;
+		//	CONSTANT float maxX = 2.f;
 
-			CONSTANT float minY = 0.f;
+		//	CONSTANT float minY = 0.f;
 
-			CONSTANT float maxY = 4.f;
+		//	CONSTANT float maxY = 4.f;
 
-			//CONSTANT float minZ = -20.f;
-			CONSTANT float minZ = -2.f;
+		//	//CONSTANT float minZ = -20.f;
+		//	CONSTANT float minZ = -2.f;
 
-			//CONSTANT float maxZ = 20.f;
-			CONSTANT float maxZ = 2.f;
+		//	//CONSTANT float maxZ = 20.f;
+		//	CONSTANT float maxZ = 2.f;
 
-			CONSTANT float xSize = maxX - minX;
+		//	CONSTANT float xSize = maxX - minX;
 
-			CONSTANT float ySize = maxY - minY;
+		//	CONSTANT float ySize = maxY - minY;
 
-			CONSTANT float zSize = maxZ - minZ;
+		//	CONSTANT float zSize = maxZ - minZ;
 
-			CONSTANT glm::vec3 mins(minX, minY, minZ);
+			CONSTANT glm::vec3 mins(config::simulation::boundingBox::minX, config::simulation::boundingBox::minY, config::simulation::boundingBox::minZ);
 
-			CONSTANT glm::vec3 maxs(maxX, maxY, maxZ);
+			CONSTANT glm::vec3 maxs(config::simulation::boundingBox::maxX, config::simulation::boundingBox::maxY, config::simulation::boundingBox::maxZ);
 
-			CONSTANT glm::vec3 sizes(xSize, ySize, zSize);
+			CONSTANT glm::vec3 sizes(config::simulation::boundingBox::xSize, config::simulation::boundingBox::ySize, config::simulation::boundingBox::zSize);
 
-			inline
-			namespace grid {
-				// using cheap ceiling at compile time, for some reason cmath does not use constexpr *yet*, it will mostly work fine
+		inline
+		namespace grid {
+		//		// using cheap ceiling at compile time, for some reason cmath does not use constexpr *yet*, it will mostly work fine
 
-				CONSTANT int32 xSamples = int32((xSize + 0.99f * physics::smoothingLength) / physics::smoothingLength);
+		//		CONSTANT int32 xSamples = int32((xSize + 0.99f * physics::smoothingLength) / physics::smoothingLength);
 
-				CONSTANT int32 ySamples = int32((ySize + 0.99f * physics::smoothingLength) / physics::smoothingLength);
+		//		CONSTANT int32 ySamples = int32((ySize + 0.99f * physics::smoothingLength) / physics::smoothingLength);
 
-				CONSTANT int32 zSamples = int32((zSize + 0.99f * physics::smoothingLength) / physics::smoothingLength);
+		//		CONSTANT int32 zSamples = int32((zSize + 0.99f * physics::smoothingLength) / physics::smoothingLength);
 
-				CONSTANT glm::vec<3, int32> samples(xSamples, ySamples, zSamples);
+				CONSTANT glm::vec<3, int32> samples(config::simulation::boundingBox::xSamples, config::simulation::boundingBox::ySamples, config::simulation::boundingBox::zSamples);
 
-				CONSTANT int32 nCells = xSamples * ySamples * zSamples;
+		//		CONSTANT int32 nCells = xSamples * ySamples * zSamples;
 
 			}
 		}
