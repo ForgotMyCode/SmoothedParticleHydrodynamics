@@ -1,11 +1,24 @@
+/*****************************************************************//**
+ * \file   Particle.h
+ * \brief  Particle definition that can be shared between host and device.
+ * 
+ * \author Ondøej Mézl
+ * \date   December 2022
+ *********************************************************************/
+
 #pragma once
 
 #include <glm/glm.hpp>
 #include <niceIntTypes.h>
 
 struct Particle {
+
 	struct Neighbor {
+
+		// Particle being the neighbor
 		Particle* NeighborParticle{};
+
+		// how far is the neighbor
 		float Distance;
 	};
 
@@ -27,7 +40,9 @@ struct Particle {
 	// # of neighbors
 	int32 NumberOfNeighbors{};
 
+	// pressure of the particle
 	float Pressure{};
 
+	// density of the particle
 	float Density{};
 };

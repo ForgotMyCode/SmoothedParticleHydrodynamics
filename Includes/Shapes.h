@@ -1,3 +1,11 @@
+/*****************************************************************//**
+ * \file   Shapes.h
+ * \brief  Some hardcoded simple geometry shapes.
+ * 
+ * \author Ondøej Mézl
+ * \date   December 2022
+ *********************************************************************/
+
 #pragma once
 
 #include <array>
@@ -6,6 +14,11 @@
 
 namespace shapes {
 
+	/**
+	 * \brief Generate simple AABB made of triangles.
+	 *  
+	 * \return Array of 36 (x, y, z) vertices forming triangles.
+	 */
 	template<float minX, float maxX, float minY, float maxY, float minZ, float maxZ>
 	constexpr auto axisAlignedBox() {
 		return std::array<float, 6 * 6 * 3>{
@@ -55,6 +68,11 @@ namespace shapes {
 		};
 	}
 
+	/**
+	 * \brief Simple AABB that is made from lines with X on each side.
+	 * 
+	 * \return Array of 12*2 + 6*4 (x, y, z) vertices.
+	 */
 	template<float minX, float maxX, float minY, float maxY, float minZ, float maxZ>
 	constexpr auto axisAlignedLinedBox() {
 		return std::array<float, 12*2*3 + 6*4*3>{
@@ -128,6 +146,11 @@ namespace shapes {
 		};
 	}
 
+	/**
+	 * \brief Simple 2D rectangle made of 2 triangles meant to be used for billboards.
+	 * 
+	 * \return 6 vertices (x, y, textureX, textureY)
+	 */
 	template<float minX, float maxX, float minY, float maxY>
 	constexpr auto texturedUniquad() {
 		return std::array<float, 3 * 2 * 4> { {

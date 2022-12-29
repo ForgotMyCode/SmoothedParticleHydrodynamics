@@ -11,6 +11,8 @@
 namespace config {
 
 	CPPGLOBAL bool isGPUsimulation;
+
+	CPPGLOBAL int32 stepsPerFrame;
 	
 	namespace debug {
 

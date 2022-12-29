@@ -61,34 +61,40 @@ void Simulation::Initialize() {
 
 void Simulation::cpuStepSerial(float deltaTimeSec) {
 
+	deltaTimeSec /= float(config::stepsPerFrame);
+
 	float const timeStart = Window::GetActiveWindow()->GetTimeSeconds();
 
 	//deltaTimeSec = 0.01f;
 	deltaTimeSec = glm::clamp(deltaTimeSec, 0.001f, 0.1f);
 
-	FOR_EACH_CELL_ZYX(z, y, x) {
-		(*SimulationGrid)[z][y][x].Size = 0;
-	}
+	for(int32 step = 0; step < config::stepsPerFrame; ++step) {
 
-	static constexpr int32 threadCount = std::max(
-		int32(config::simulation::maxNumberOfParticles),
-		config::simulation::boundingBox::nCells
-	);
+		FOR_EACH_CELL_ZYX(z, y, x) {
+			(*SimulationGrid)[z][y][x].Size = 0;
+		}
 
-	for(int32 threadId = 0; threadId < threadCount; ++threadId) {
-		cpuFillGridWithParticles(threadId, Particles.get(), NumberOfParticles, *SimulationGrid, 1);
-	}
+		static constexpr int32 threadCount = std::max(
+			int32(config::simulation::maxNumberOfParticles),
+			config::simulation::boundingBox::nCells
+		);
 
-	for(int32 threadId = 0; threadId < threadCount; ++threadId) {
-		cpuNeighborsDensityPressure(threadId, Particles.get(), NumberOfParticles, *SimulationGrid);
-	}
+		for(int32 threadId = 0; threadId < threadCount; ++threadId) {
+			cpuFillGridWithParticles(threadId, Particles.get(), NumberOfParticles, *SimulationGrid, 1);
+		}
 
-	for(int32 threadId = 0; threadId < threadCount; ++threadId) {
-		cpuForces(threadId, Particles.get(), NumberOfParticles);
-	}
+		for(int32 threadId = 0; threadId < threadCount; ++threadId) {
+			cpuNeighborsDensityPressure(threadId, Particles.get(), NumberOfParticles, *SimulationGrid);
+		}
 
-	for(int32 threadId = 0; threadId < threadCount; ++threadId) {
-		cpuVelocities(threadId, Particles.get(), NumberOfParticles, glm::clamp(deltaTimeSec, 0.0001f, 0.1f) * config::simulation::physics::timeScale);
+		for(int32 threadId = 0; threadId < threadCount; ++threadId) {
+			cpuForces(threadId, Particles.get(), NumberOfParticles);
+		}
+
+		for(int32 threadId = 0; threadId < threadCount; ++threadId) {
+			cpuVelocities(threadId, Particles.get(), NumberOfParticles, glm::clamp(deltaTimeSec, 0.0001f, 0.1f) * config::simulation::physics::timeScale);
+		}
+
 	}
 	
 	float const timeEnd = Window::GetActiveWindow()->GetTimeSeconds();
@@ -97,7 +103,9 @@ void Simulation::cpuStepSerial(float deltaTimeSec) {
 
 }
 
-void Simulation::cpuStepParallel(float deltaTimeSec) {	
+void Simulation::cpuStepParallel(float deltaTimeSec) {
+
+	deltaTimeSec /= float(config::stepsPerFrame);
 
 	float const timeStart = Window::GetActiveWindow()->GetTimeSeconds();
 
@@ -106,36 +114,39 @@ void Simulation::cpuStepParallel(float deltaTimeSec) {
 		config::simulation::boundingBox::nCells
 	);
 
-#pragma omp parallel
-	{
+	for(int32 step = 0; step < config::stepsPerFrame; ++step) {
 
-#pragma omp for
-		FOR_EACH_CELL_ZYX(z, y, x) {
-			(*SimulationGrid)[z][y][x].Size = 0;
-		}
+	#pragma omp parallel
+		{
+
+	#pragma omp for
+			FOR_EACH_CELL_ZYX(z, y, x) {
+				(*SimulationGrid)[z][y][x].Size = 0;
+			}
 		
-#pragma omp barrier
-#pragma omp for
-		for(int32 threadId = 0; threadId < threadCount; ++threadId) {
-			cpuFillGridWithParticles(threadId, Particles.get(), NumberOfParticles, *SimulationGrid, 1);
-		}
+	#pragma omp barrier
+	#pragma omp for
+			for(int32 threadId = 0; threadId < threadCount; ++threadId) {
+				cpuFillGridWithParticles(threadId, Particles.get(), NumberOfParticles, *SimulationGrid, 1);
+			}
 		
-#pragma omp barrier
-#pragma omp for
-		for(int32 threadId = 0; threadId < threadCount; ++threadId) {
-			cpuNeighborsDensityPressure(threadId, Particles.get(), NumberOfParticles, *SimulationGrid);
-		}
+	#pragma omp barrier
+	#pragma omp for
+			for(int32 threadId = 0; threadId < threadCount; ++threadId) {
+				cpuNeighborsDensityPressure(threadId, Particles.get(), NumberOfParticles, *SimulationGrid);
+			}
 		
-#pragma omp barrier
-#pragma omp for
-		for(int32 threadId = 0; threadId < threadCount; ++threadId) {
-			cpuForces(threadId, Particles.get(), NumberOfParticles);
-		}
+	#pragma omp barrier
+	#pragma omp for
+			for(int32 threadId = 0; threadId < threadCount; ++threadId) {
+				cpuForces(threadId, Particles.get(), NumberOfParticles);
+			}
 		
-#pragma omp barrier
-#pragma omp for
-		for(int32 threadId = 0; threadId < threadCount; ++threadId) {
-			cpuVelocities(threadId, Particles.get(), NumberOfParticles, glm::clamp(deltaTimeSec, 0.0001f, 0.1f) * config::simulation::physics::timeScale);
+	#pragma omp barrier
+	#pragma omp for
+			for(int32 threadId = 0; threadId < threadCount; ++threadId) {
+				cpuVelocities(threadId, Particles.get(), NumberOfParticles, glm::clamp(deltaTimeSec, 0.0001f, 0.1f) * config::simulation::physics::timeScale);
+			}
 		}
 	}
 	
@@ -148,6 +159,9 @@ void Simulation::cpuStepParallel(float deltaTimeSec) {
 
 
 void Simulation::gpuStepParallel(float deltaTimeSec) {
+
+	deltaTimeSec /= float(config::stepsPerFrame);
+
 	float const timeStart = Window::GetActiveWindow()->GetTimeSeconds();
 
 	static constexpr int32 threadCount = std::max(
@@ -160,17 +174,21 @@ void Simulation::gpuStepParallel(float deltaTimeSec) {
 
 	static constexpr int32 gridSize = (threadCount + blockSize - 1) / blockSize;
 
-	gpuSimulation::gpuBeginStep(gpuGrid, gpuDefaultGrid, config::simulation::boundingBox::xSamples, config::simulation::boundingBox::ySamples, config::simulation::boundingBox::zSamples);
+	for(int32 step = 0; step < config::stepsPerFrame; ++step) {
 
-	gpuSimulation::callKernel_gpuFillGridWithParticles (gridSize, blockSize, gpuParticles, config::simulation::maxNumberOfParticles, gpuGrid);
+		gpuSimulation::gpuBeginStep(gpuGrid, gpuDefaultGrid, config::simulation::boundingBox::xSamples, config::simulation::boundingBox::ySamples, config::simulation::boundingBox::zSamples);
 
-	gpuSimulation::callKernel_gpuNeighborsDensityPressure (gridSize, blockSize, gpuParticles, config::simulation::maxNumberOfParticles, gpuGrid, config::simulation::physics::smoothingKernelNormalizationDistanceToDensityConstant, config::simulation::physics::particleMass, config::simulation::physics::gasConstantK, config::simulation::physics::restDensity);
+		gpuSimulation::callKernel_gpuFillGridWithParticles (gridSize, blockSize, gpuParticles, config::simulation::maxNumberOfParticles, gpuGrid);
 
-	gpuSimulation::callKernel_gpuForces(gridSize, blockSize, gpuParticles, config::simulation::maxNumberOfParticles, config::simulation::physics::smoothingKernelNormalizationPressureToForceConstant, config::simulation::physics::particleMass, config::simulation::physics::smoothingKernelNormalizationViscousForceConstant, config::simulation::physics::dynamicViscosity, config::simulation::physics::gravityConstant, config::simulation::gravityDirection);
+		gpuSimulation::callKernel_gpuNeighborsDensityPressure (gridSize, blockSize, gpuParticles, config::simulation::maxNumberOfParticles, gpuGrid, config::simulation::physics::smoothingKernelNormalizationDistanceToDensityConstant, config::simulation::physics::particleMass, config::simulation::physics::gasConstantK, config::simulation::physics::restDensity);
 
-	gpuSimulation::callKernel_gpuVelocities(gridSize, blockSize, gpuParticles, config::simulation::maxNumberOfParticles, deltaTimeSec, config::simulation::physics::outOfBoundsVelocityScale);
+		gpuSimulation::callKernel_gpuForces(gridSize, blockSize, gpuParticles, config::simulation::maxNumberOfParticles, config::simulation::physics::smoothingKernelNormalizationPressureToForceConstant, config::simulation::physics::particleMass, config::simulation::physics::smoothingKernelNormalizationViscousForceConstant, config::simulation::physics::dynamicViscosity, config::simulation::physics::gravityConstant, config::simulation::gravityDirection);
 
-	gpuSimulation::gpuFinishStep(Particles.get(), gpuParticles, config::simulation::maxNumberOfParticles);
+		gpuSimulation::callKernel_gpuVelocities(gridSize, blockSize, gpuParticles, config::simulation::maxNumberOfParticles, deltaTimeSec, config::simulation::physics::outOfBoundsVelocityScale);
+
+	}
+
+	gpuSimulation::gpuFinish(Particles.get(), gpuParticles, config::simulation::maxNumberOfParticles);
 
 	float const timeEnd = Window::GetActiveWindow()->GetTimeSeconds();
 

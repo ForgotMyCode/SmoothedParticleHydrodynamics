@@ -44,7 +44,7 @@ namespace gpuSimulation {
 
 	}
 
-	void gpuFinishStep(Particle* hostParticles, Particle* devParticles, int32 nParticles) {
+	void gpuFinish(Particle* hostParticles, Particle* devParticles, int32 nParticles) {
 		CUDA_CHECK_ERROR(cudaMemcpy(hostParticles, devParticles, sizeof(Particle) * nParticles, cudaMemcpyDeviceToHost));
 	}
 

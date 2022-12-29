@@ -1,3 +1,12 @@
+/*****************************************************************//**
+ * \file   cudaargs.h
+ * \brief  Small header that fixes some false intellisense errors in visual studio. Also provides a way to pass arguments
+ *		when calling cuda kernels instead of <<< >>> .
+ * 
+ * \author Ondøej Mézl
+ * \date   December 2022
+ *********************************************************************/
+
 // https://github.com/ForgotMyCode/Visual-Studio-Cuda-IntelliSense-Workaround
 
 #pragma once

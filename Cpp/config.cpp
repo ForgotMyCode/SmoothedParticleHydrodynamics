@@ -2,7 +2,9 @@
 
 namespace config {
 
-	bool isGPUsimulation = true;
+	bool isGPUsimulation = false;
+
+	int32 stepsPerFrame = 10;
 
 	namespace simulation {
 

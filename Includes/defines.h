@@ -1,3 +1,11 @@
+/*****************************************************************//**
+ * \file   defines.h
+ * \brief  Header that defines various macros.
+ * 
+ * \author Ondøej Mézl
+ * \date   December 2022
+ *********************************************************************/
+
 #pragma once
 
 #define CONSTANT constexpr static

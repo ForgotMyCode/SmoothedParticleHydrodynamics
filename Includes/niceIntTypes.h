@@ -1,3 +1,11 @@
+/*****************************************************************//**
+ * \file   niceIntTypes.h
+ * \brief  cstdint types, some aliases with nicer names.
+ * 
+ * \author Ondøej Mézl
+ * \date   December 2022
+ *********************************************************************/
+
 #pragma once
 
 #include <cstdint>
