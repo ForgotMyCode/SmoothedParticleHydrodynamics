@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0078)https://cent.felk.cvut.cz/courses/GPU/download/template/template_B4M39GPU.html -->
+<html xmlns="http://www.w3.org/1999/xhtml"><link type="text/css" rel="stylesheet" id="dark-mode-custom-link"><link type="text/css" rel="stylesheet" id="dark-mode-general-link"><style lang="en" type="text/css" id="dark-mode-custom-style"></style><style lang="en" type="text/css" id="dark-mode-native-style"></style><style lang="en" type="text/css" id="dark-mode-native-sheet"></style><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ <!-- ********** Doplňte jméno! ********** -->
+ <title>Ondřej Mézl – Semestrální projekt z předmětu B4M39GPU</title>
+ 
+ <link rel="shortcut icon" href="https://cent.felk.cvut.cz/courses/GPU/img/favicon.ico">
+ <link rel="stylesheet" type="text/css" href="./index_files/template_A4M39GPU.css">
+</head><body>
+ <div class="page">
+  <div class="header" id="header">
+   <h1 class="hidden">Semestrální projekt z předmětu B4M39GPU</h1>
+   <hr class="hidden">
+  </div>
+  <div class="left"><div class="right"><div class="main">
+
+   <!-- ********** Doplňte název projektu ********** -->
+   <h2 class="project">Smoothed-Particle Hydrodynamics</h2>
+
+   <!-- ********** Doplňte jméno autora ********** -->
+   <h3 class="author">Ondřej Mézl</h3>
+
+   <!-- ********** Vytvořte 3 screenshoty (screenshot1.png – screenshot3.png) a k nim náhledy (thumb1.png – thumb3.png) o velikosti
+        300×250 pixelů. Pro uložení doporučujeme použít formát PNG, popřípadě JPEG. Nepoužívejte formáty jako BMP nebo TIFF! ********** -->
+   <div class="screenshots">
+    <a href="./index_files/img/screenshot1.png"><img class="screenshot" src="./index_files/thumb1.png" alt="Screenshot #1"></a>
+    <a href="./index_files/img/screenshot2.png"><img class="screenshot" src="./index_files/thumb2.png" alt="Screenshot #2"></a>
+    <a href="./index_files/img/screenshot3.png"><img class="screenshot" src="./index_files/thumb3.png" alt="Screenshot #3"></a>
+   </div>
+
+   <h4>Zadání</h4>
+   <p>
+    <!-- ********** Doplňte zadání ********** -->
+    Implementace Smoothed-Particle Hydrodynamics (SPH) ve 3D na procesuru a grafické kartě.
+	Jedná se o metodu pro výpočet fyzikální simulace tekutin.
+	Výpočty probíhají na úrovni částic.
+	Při každém kroku simulace si každá částice připočítá vlivy svých sousedů do určité vzdálenosti.
+	Složitost této operace je kvadratická, proto jsou částice umístěny do mřížky, která v průměrném případě vyhledávání sousedů urychluje.
+	Součástí implementace je i vizualizace v OpenGL.
+   </p>
+
+   <h4>Ovládání</h4>
+   <p>
+    <!-- ********** Doplňte popis ovládání ********** -->
+    Konfiguraci je možné provést úpravou souboru "config.txt". Formát: Na každé řádce [jméno proměnné]=[hodnota].
+   </p>
+
+   <p>
+	<ul>
+		<li>
+			<B>Pohyb myší</B> Rozhlížení.
+		</li>
+		<li>
+			<B>W/A/S/D</B> Pohyb kamery Dopředu/doleva/dozadu/doprava.
+		</li>
+		<li>
+			<B>Q/E</B> Pohyb kamery dolů/nahoru.
+		</li>
+		<li>
+			<B>Šipka doleva/Šipka doprava</B> Otáčení směru gravitace v rovině.
+		</li>
+		<li>
+			<B>ESC</B> Konec.
+		</li>
+	</ul>
+   </p>
+
+   <h4>Download</h4>
+   <ul>
+    <!-- ********** Upravte název: „src.zip“ pro Windows, „src.tgz“ pro Linux ********** -->
+    <li><a href="https://cent.felk.cvut.cz/courses/GPU/download/template/code/src.zip">Zdrojové kódy</a></li>
+    <!-- ********** Upravte název: „windows.zip“ pro Windows, „linux.tgz“ pro Linux ********** -->
+    <li><a href="https://cent.felk.cvut.cz/courses/GPU/download/template/code/windows.zip">Spustitelná verze</a></li>
+    <li><a href="https://cent.felk.cvut.cz/courses/GPU/download/template/report/report.pdf">Závěrečná zpráva</a></li>
+    <li><a href="https://cent.felk.cvut.cz/courses/GPU/download/template/report/presentation.pdf">Prezentace</a></li>
+
+   </ul>
+
+   <!-- ********** ODSTRAŇTE >>> ********** -->
+   <div style="background-color:#e8f2ff; border:1px solid #0061af; margin:20px 5px 5px 5px; padding:3px 6px; text-align:left;">
+    <h4 style="background:none; margin:0px 0px -10px 0px;">Poznámky (smažte ve finální verzi)</h4>
+    <ul>
+     <li>Zdrojové kódy zabalte do archivu <code>src.zip</code> (popřípadě <code>src.tgz</code> pro Linux).</li>
+     <li>Spustitelnou verzi zabalte do archivu <code>windows.zip</code> (pro Windows), popřípadě <code>linux.tgz</code> (pro Linux).</li>
+     <li>Soubory <code>src.zip</code> (<code>src.tgz</code>) a <code>windows.zip</code> (<code>linux.tgz</code>) uložte do adresáře <code>code</code>.</li>
+     <li>Report (závěrečnou zprávu) uložte do souboru <code>report.pdf</code>, který umístíte do adresáře <code>report</code>.</li>
+     <li>Prezentaci uložte do souboru <code>presentation.pdf</code>, který umístíte do adresáře <code>report</code>.</li>
+     <li>Vytvořte 3 screenshoty (<code>screenshot[1–3].png</code>) a k nim náhledy (<code>thumb[1–3].png</code>) o velikosti 300×250 pixelů. Pro uložení doporučujeme použít formát PNG, popřípadě JPEG. Nepoužívejte formáty jako BMP nebo TIFF!</li>
+     <li>Soubory s obrázky <code>thumb[1–3].png</code> a <code>screenshot[1–3].png</code> uložte do adresáře <code>img</code>.</li>
+     <li>Stránka se bude jmenovat <em><code>index.html</code></em> !</li>
+     <li>Stránku a adresáře <code>code</code>, <code>img</code> a <code>report</code> nahrajete do svého projektového adresáře na serveru leyfi.</li>
+    </ul>
+   </div>
+   <!-- ********** <<< ODSTRAŇTE ********** -->
+
+  </div></div></div>
+  <div class="footer"><hr class="hidden">
+   <div class="footer_inner">Poslední aktualizace:
+    <!-- ********** Upravte datum poslední aktualizace ********** -->
+    <!-- #BeginDate format:Ge1 -->10.01.2023<!-- #EndDate -->
+   </div>
+  </div>
+ </div>
+
+</body></html>

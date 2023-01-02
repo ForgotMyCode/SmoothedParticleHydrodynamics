@@ -74,7 +74,7 @@ void Simulation::cpuStepSerial(float deltaTimeSec) {
 			(*SimulationGrid)[z][y][x].Size = 0;
 		}
 
-		static constexpr int32 threadCount = std::max(
+		static int32 threadCount = std::max(
 			int32(config::simulation::maxNumberOfParticles),
 			config::simulation::boundingBox::nCells
 		);
@@ -109,7 +109,7 @@ void Simulation::cpuStepParallel(float deltaTimeSec) {
 
 	float const timeStart = Window::GetActiveWindow()->GetTimeSeconds();
 
-	static constexpr int32 threadCount = std::max(
+	static int32 threadCount = std::max(
 		int32(config::simulation::maxNumberOfParticles),
 		config::simulation::boundingBox::nCells
 	);
@@ -162,17 +162,20 @@ void Simulation::gpuStepParallel(float deltaTimeSec) {
 
 	deltaTimeSec /= float(config::stepsPerFrame);
 
-	float const timeStart = Window::GetActiveWindow()->GetTimeSeconds();
-
-	static constexpr int32 threadCount = std::max(
+	static int32 threadCount = std::max(
 		int32(config::simulation::maxNumberOfParticles),
 		config::simulation::boundingBox::nCells
 	);
 
 
-	static constexpr int32 blockSize = 256;
+	static constexpr int32 blockSize = 512;
 
-	static constexpr int32 gridSize = (threadCount + blockSize - 1) / blockSize;
+	static int32 gridSize = (threadCount + blockSize - 1) / blockSize;
+
+	cudaEvent_t start, stop;
+	cudaEventCreate(&start);
+	cudaEventCreate(&stop);
+	cudaEventRecord(start);
 
 	for(int32 step = 0; step < config::stepsPerFrame; ++step) {
 
@@ -184,13 +187,17 @@ void Simulation::gpuStepParallel(float deltaTimeSec) {
 
 		gpuSimulation::callKernel_gpuForces(gridSize, blockSize, gpuParticles, config::simulation::maxNumberOfParticles, config::simulation::physics::smoothingKernelNormalizationPressureToForceConstant, config::simulation::physics::particleMass, config::simulation::physics::smoothingKernelNormalizationViscousForceConstant, config::simulation::physics::dynamicViscosity, config::simulation::physics::gravityConstant, config::simulation::gravityDirection);
 
-		gpuSimulation::callKernel_gpuVelocities(gridSize, blockSize, gpuParticles, config::simulation::maxNumberOfParticles, deltaTimeSec, config::simulation::physics::outOfBoundsVelocityScale);
+		gpuSimulation::callKernel_gpuVelocities(gridSize, blockSize, gpuParticles, config::simulation::maxNumberOfParticles, glm::clamp(deltaTimeSec, 0.0001f, 0.1f) * config::simulation::physics::timeScale, config::simulation::physics::outOfBoundsVelocityScale);
 
 	}
 
+	cudaEventRecord(stop);
+
 	gpuSimulation::gpuFinish(Particles.get(), gpuParticles, config::simulation::maxNumberOfParticles);
 
-	float const timeEnd = Window::GetActiveWindow()->GetTimeSeconds();
+	cudaEventSynchronize(stop);
+	float calculationTime;
+	cudaEventElapsedTime(&calculationTime, start, stop);
 
-	Window::GetActiveWindow()->AddCalculationTime(timeEnd - timeStart);
+	Window::GetActiveWindow()->AddCalculationTime(calculationTime / 1000.f);
 }

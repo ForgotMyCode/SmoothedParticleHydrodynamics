@@ -69,7 +69,7 @@ namespace config {
 
 	namespace simulation {
 	
-		CONSTANT int64 maxNumberOfParticles = 5000;
+		CPPGLOBAL int64 maxNumberOfParticles;
 
 		CPPGLOBAL float particleSize;
 
@@ -169,5 +169,12 @@ namespace config {
 		}
 	
 	}
+
+	/**
+	 * \brief Load config from file.
+	 * 
+	 * \param fileName Name or path of the config file.
+	 */
+	void loadConfigFromFile(std::string const& fileName);
 
 }

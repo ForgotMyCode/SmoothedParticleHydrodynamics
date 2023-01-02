@@ -63,8 +63,8 @@ namespace gpuSimulation {
 		int32& neighborCount = particle.NumberOfNeighbors;
 		neighborCount = 0;
 
-		for(int32 i = 0; i < 27; ++i) {
-			auto const& off = lookaround[i];
+		for(int32 lookaroundI = 0; lookaroundI < 27; ++lookaroundI) {
+			auto const& off = lookaround[lookaroundI];
 			auto const xOff = off.x;
 			auto const yOff = off.y;
 			auto const zOff = off.z;

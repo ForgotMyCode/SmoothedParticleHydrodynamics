@@ -13,6 +13,8 @@
 #include <glad/glad.h>
 
 int main() {
+	config::loadConfigFromFile("config.txt");
+
 	Window window{};
 
 	Scene testScene{};
