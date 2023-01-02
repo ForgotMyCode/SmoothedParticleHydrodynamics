@@ -1,0 +1,53 @@
+Test 1:
+=======
+
+isGPUsimulation=1
+stepsPerFrame=100
+gravityDirectionChangePerSecond=1.0
+gasConstantK=20.0
+restDensity=1000.0
+outOfBoundsVelocityScale=0.9
+gravityConstant=9.77
+particleMass=0.1
+dynamicViscosity=0.1
+timeScale=10.0
+maxNumberOfParticles=5000
+
+Setup: config1.txt: Low viscosity
+Observation: The particles near the surface are more easily detached
+
+Test 2:
+=======
+
+isGPUsimulation=1
+stepsPerFrame=100
+gravityDirectionChangePerSecond=1.0
+gasConstantK=20.0
+restDensity=1000.0
+outOfBoundsVelocityScale=0.9
+gravityConstant=9.77
+particleMass=0.1
+dynamicViscosity=10.0
+timeScale=10.0
+maxNumberOfParticles=5000
+
+Setup: config2.txt: High viscosity
+Observation: The simulation resembles "foam", it is more resistant to deformation
+
+Test 3:
+=======
+
+isGPUsimulation=1
+stepsPerFrame=100
+gravityDirectionChangePerSecond=1.0
+gasConstantK=20.0
+restDensity=1000.0
+outOfBoundsVelocityScale=0.9
+gravityConstant=1.77
+particleMass=0.1
+dynamicViscosity=0.9
+timeScale=10.0
+maxNumberOfParticles=3000
+
+Setup: config3.txt Low gravity, less particles
+Observation: There is less particles and the gravity pulls them slower.
