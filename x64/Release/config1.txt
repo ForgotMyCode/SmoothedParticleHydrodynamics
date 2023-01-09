@@ -1,0 +1,11 @@
+isGPUsimulation=1
+stepsPerFrame=100
+gravityDirectionChangePerSecond=1.0
+gasConstantK=20.0
+restDensity=1000.0
+outOfBoundsVelocityScale=0.9
+gravityConstant=9.77
+particleMass=0.1
+dynamicViscosity=10.0
+timeScale=10.0
+maxNumberOfParticles=5000
