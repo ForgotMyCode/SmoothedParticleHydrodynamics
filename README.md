@@ -14,4 +14,4 @@ https://github.com/ForgotMyCode/SmoothedParticleHydrodynamics/assets/79061723/84
 
 ## Dependencies
 
-CUDA, GLAD, GLFW, GLM, LibPNG, OpenGL, OpenMP, Zlib.
+Cimg, CUDA, GLAD, GLFW, GLM, LibPNG, OpenGL, OpenMP, Zlib.
