@@ -1,5 +1,0 @@
-D:\projects\GPU_mezlondr\x64\Debug\GPU_mezlondr.vcxproj.CopyComplete
-D:\projects\GPU_mezlondr\x64\Debug\GPU_mezlondr.exe
-D:\projects\GPU_mezlondr\x64\Debug\glfw3.dll
-D:\projects\GPU_mezlondr\x64\Debug\libpng16d.dll
-D:\projects\GPU_mezlondr\x64\Debug\zlibd1.dll
